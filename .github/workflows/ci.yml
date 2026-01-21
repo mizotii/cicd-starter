@@ -3,32 +3,32 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-    build-and-test:
-        strategy:
-            matrix:
-                python-version: ["3.9", "3.10", "3.11"]
-                
-        runs-on: ubuntu-latest
+  build-and-test:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: checkout repository
-              uses: actions/checkout@v4
+    strategy:
+        matrix:
+            python-version: ["3.9", "3.10", "3.11"]
 
-            - name: set up python
-              uses: actions/setup-python@v5
-              with:
-                python-version: ${{ matrix.python-version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: install dependencies
-              run: pip install -r requirements.txt
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-            - name: run tests
-              run: pytest --maxfail=1 --disable-warnings
-              env:
-                PYTHONPATH: ${{ github.workspace }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-            - name: upload test report
-              uses: actions/upload-artifact@v4
-              with:
-                name: test-report
-                path: .
+      - name: Run tests
+        run: pytest --maxfail=1 --disable-warnings
+        env: 
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: .
